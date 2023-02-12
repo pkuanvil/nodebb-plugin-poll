@@ -1,7 +1,7 @@
 'use strict';
 
 const async = require.main.require('async');
-const NodeBB = require('../lib/nodebb');
+const db = require.main.require('./src/database');
 
 const timestamp = Date.UTC(2019, 3, 1);
 
@@ -9,7 +9,7 @@ module.exports = {
 	name: 'Convert all poll id votes and options votes to sorted sets',
 	timestamp: timestamp,
 	method: function (callback) {
-		NodeBB.db.getListRange('polls', 0, -1, (err, pollIds) => {
+		db.getListRange('polls', 0, -1, (err, pollIds) => {
 			if (err) {
 				return callback(err);
 			}
@@ -17,7 +17,7 @@ module.exports = {
 				const pollKey = `poll:${pollId}`;
 				const pollVotersSetKey = `poll:${pollId}:voters`;
 
-				NodeBB.db.getObjectField(pollKey, 'voteCount', (err, value) => {
+				db.getObjectField(pollKey, 'voteCount', (err, value) => {
 					if (err) {
 						return next(err);
 					}
@@ -31,29 +31,29 @@ module.exports = {
 						}
 						async.parallel([
 							function (next) {
-								NodeBB.db.deleteObjectField(pollKey, 'voteCount', next);
+								db.deleteObjectField(pollKey, 'voteCount', next);
 							},
 							function (next) {
 								let votersUids;
 								async.waterfall([
 									function (_next) {
-										NodeBB.db.type(pollVotersSetKey, _next);
+										db.type(pollVotersSetKey, _next);
 									},
 									function (type, _next) {
 										if (type !== 'set') {
 											return next();
 										}
-										NodeBB.db.getSetMembers(pollVotersSetKey, _next);
+										db.getSetMembers(pollVotersSetKey, _next);
 									},
 									function (_votersUids, _next) {
 										votersUids = _votersUids;
 										if (!Array.isArray(votersUids) || !votersUids.length) {
 											return next();
 										}
-										NodeBB.db.delete(pollVotersSetKey, _next);
+										db.delete(pollVotersSetKey, _next);
 									},
 									function (_next) {
-										NodeBB.db.sortedSetAdd(
+										db.sortedSetAdd(
 											pollVotersSetKey,
 											votersUids.map(() => timestamp),
 											votersUids,
@@ -72,23 +72,23 @@ module.exports = {
 											let optionVotesUids;
 											async.waterfall([
 												function (_next) {
-													NodeBB.db.type(pollOptionsVotesSetKey, _next);
+													db.type(pollOptionsVotesSetKey, _next);
 												},
 												function (type, _next) {
 													if (type !== 'set') {
 														return next();
 													}
-													NodeBB.db.getSetMembers(pollOptionsVotesSetKey, _next);
+													db.getSetMembers(pollOptionsVotesSetKey, _next);
 												},
 												function (_optionVotesUids, _next) {
 													optionVotesUids = _optionVotesUids;
 													if (!Array.isArray(optionVotesUids) || !optionVotesUids.length) {
 														return next();
 													}
-													NodeBB.db.delete(pollOptionsVotesSetKey, _next);
+													db.delete(pollOptionsVotesSetKey, _next);
 												},
 												function (_next) {
-													NodeBB.db.sortedSetAdd(
+													db.sortedSetAdd(
 														pollOptionsVotesSetKey,
 														optionVotesUids.map(() => timestamp),
 														optionVotesUids,
@@ -98,7 +98,7 @@ module.exports = {
 											], next);
 										},
 										function (next) {
-											NodeBB.db.deleteObjectField(pollOptionsSetKey, 'voteCount', next);
+											db.deleteObjectField(pollOptionsSetKey, 'voteCount', next);
 										},
 									], next);
 								}, next);
@@ -106,19 +106,18 @@ module.exports = {
 						], next);
 					});
 				});
-			},
-			callback);
+			}, callback);
 		});
 	},
 };
 
 function getOptions(pollId, callback) {
-	NodeBB.db.getSetMembers(`poll:${pollId}:options`, (err, options) => {
+	db.getSetMembers(`poll:${pollId}:options`, (err, options) => {
 		if (err) {
 			return callback(err);
 		}
 		async.map(options, (option, next) => {
-			NodeBB.db.getObject(`poll:${pollId}:options:${option}`, next);
+			db.getObject(`poll:${pollId}:options:${option}`, next);
 		}, callback);
 	});
 }
