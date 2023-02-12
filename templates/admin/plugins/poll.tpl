@@ -10,7 +10,7 @@
                             <div class="mb-3">
                                 <div class="form-check">
                                     <label class="form-check-label">[[poll:allow_guests]]</label>
-                                    <input class="form-check-input" type="checkbox" data-key="toggles.allowAnon" data-trim="false">
+                                    <input class="form-check-input" type="checkbox" id="toggles.allowAnon" name="toggles.allowAnon">
                                 </div>
                             </div>
                         </div>
@@ -18,7 +18,7 @@
                             <h6>[[poll:limits]]</h6>
                             <div>
                                 <label class="form-label" for="maxPollOptions">[[poll:max_options]]</label>
-                                <input type="number" class="form-control" id="maxPollOptions" placeholder="10" min="1" max="100" data-key="limits.maxOptions">
+                                <input type="number" class="form-control" id="maxPollOptions" placeholder="10" min="1" max="100" id=name="limits.maxOptions" name="limits.maxOptions">
                             </div>
                         </div>
                     </div>
@@ -32,11 +32,11 @@
                         <div class="col-lg-6">
                             <div class="mb-3">
                                 <label class="form-label" for="defaultsTitle">[[poll:default_title]]</label>
-                                <input type="text" class="form-control" id="defaultsTitle" placeholder="Poll" data-key="defaults.title">
+                                <input type="text" class="form-control" id="defaultsTitle" placeholder="Poll" id=name="defaults.title" name="defaults.title">
                             </div>
                             <div>
                                 <label class="form-label" for="defaultsMaxVotes">[[poll:max_votes]]</label>
-                                <input type="number" class="form-control" id="defaultsMaxVotes" placeholder="1" min="1" max="100" data-key="defaults.maxvotes">
+                                <input type="number" class="form-control" id="defaultsMaxVotes" placeholder="1" min="1" max="100" id="defaults.maxvotes" name="defaults.maxvotes">
                                 <p class="form-text">[[poll:info_choices]]</p>
                             </div>
                         </div>

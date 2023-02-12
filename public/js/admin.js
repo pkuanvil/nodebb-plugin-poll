@@ -14,15 +14,13 @@ define('admin/plugins/poll', ['settings'], function (Settings) {
 			save();
 		});
 
-		$('#reset').click(function () {
+		$('#reset').on('click', function () {
 			reset();
 		});
 	};
 
 	function save() {
-		Settings.persist('poll', wrapper, function () {
-			socket.emit('admin.plugins.poll.sync');
-		});
+		Settings.save('poll', wrapper);
 	}
 
 	function reset() {
@@ -32,9 +30,7 @@ define('admin/plugins/poll', ['settings'], function (Settings) {
 					if (err) {
 						console.error(err);
 					}
-					Settings.set('poll', data, wrapper, function () {
-						socket.emit('admin.plugins.poll.sync');
-					});
+					Settings.set('poll', data, wrapper);
 				});
 			}
 		});

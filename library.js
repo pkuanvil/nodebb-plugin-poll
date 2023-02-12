@@ -6,7 +6,8 @@ const AdminSockets = require.main.require('./src/socket.io/admin').plugins;
 const routeHelpers = require.main.require('./src/routes/helpers.js');
 
 const Config = require('./lib/config');
-const Sockets = require('./lib/sockets');
+const PollSockets = require('./lib/sockets');
+const PollAdminSockets = require('./lib/admin/sockets');
 const Hooks = require('./lib/hooks');
 const Scheduler = require('./lib/scheduler');
 
@@ -22,11 +23,10 @@ Plugin.load = async function (payload) {
 
 	routeHelpers.setupAdminPageRoute(router, `/admin/plugins/${Config.plugin.id}`, [], renderAdmin);
 
-	PluginSockets[Config.plugin.id] = Sockets;
-	AdminSockets[Config.plugin.id] = Config.adminSockets;
+	PluginSockets[Config.plugin.id] = PollSockets;
+	AdminSockets[Config.plugin.id] = PollAdminSockets;
 
 	await Scheduler.start();
-	await Config.init();
 	return payload;
 };
 
