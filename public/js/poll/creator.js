@@ -178,6 +178,23 @@
 							prevOption.clone().val('').insertBefore(el).focus();
 						}
 					});
+
+				// Hide dateTime section when option hasEndTime is not set
+				var dateTimePicker = modal.find('.datetime-picker');
+				var pollhasEndTime = modal.find('#pollhasEndTime');
+				function flipDateTimeDisplay(display) {
+					if (display) {
+						dateTimePicker.css('display', '');
+					} else {
+						dateTimePicker.css('display', 'none');
+					}
+				}
+				// Initial
+				flipDateTimeDisplay(pollhasEndTime.checked);
+				// 'change' event
+				pollhasEndTime.on('change', function (e) {
+					flipDateTimeDisplay(e.target.checked);
+				});
 			});
 		});
 	};
@@ -197,7 +214,7 @@
 
 	function serializeObjectFromForm(form) {
 		var obj = form.serializeObject();
-		const end = new Date(`${obj['settings.pollDate']} ${obj['settings.pollTime']}`).getTime();
+		var end = obj['settings.hasEndTime'] ? new Date(`${obj['settings.pollDate']} ${obj['settings.pollTime']}`).getTime() : undefined;
 		var result = {
 			options: obj.options,
 			settings: {
