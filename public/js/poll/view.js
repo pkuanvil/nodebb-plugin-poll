@@ -186,7 +186,8 @@
 					self.pollEndedOrDeleted();
 					self.hasVotedAndVotingUpdateDisallowed();
 
-					if (!app.user.uid || self.pollData.hasVoted) {
+					// Don't show vote panel for guest, voted user or ended/deleted vote
+					if (!app.user.uid || self.pollData.hasVoted || self.hasPollEndedOrDeleted()) {
 						self.showResultsPanel();
 					} else {
 						self.showVotingPanel();
