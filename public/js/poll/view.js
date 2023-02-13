@@ -118,7 +118,11 @@
 			},
 			handle: function (view, e) {
 				var optionId = $(e.currentTarget).parents('[data-poll-option-id]').data('poll-option-id');
-
+				// Don't do anything if !voteCount
+				// This should prevent guest from hitting lots of error message
+				if (!Array.isArray(view.pollData.options) || !view.pollData.options[optionId].voteCount) {
+					return;
+				}
 				Poll.sockets.getOptionDetails({
 					pollId: view.pollData.info.pollId,
 					optionId: optionId,
@@ -300,7 +304,9 @@
 
 	View.prototype.showResultsPanel = function () {
 		this.hideVotingPanel();
-		if ((!this.pollData.hasVoted || this.voteUpdateAllowed()) && !this.hasPollEndedOrDeleted()) {
+		// Don't show votePanelButton for guest
+		const isGuest = !app.user.uid;
+		if (!isGuest && (!this.pollData.hasVoted || this.voteUpdateAllowed()) && !this.hasPollEndedOrDeleted()) {
 			this.showVotingPanelButton();
 		} else {
 			this.hideVotingPanelButton();
