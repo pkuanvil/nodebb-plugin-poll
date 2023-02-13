@@ -88,12 +88,6 @@
 					// If there's already a poll in the post, serialize it for editing
 					if (Poll.serializer.canSerialize(textarea.value)) {
 						poll = Poll.serializer.serialize(textarea.value, config);
-
-						if (poll.settings.end === 0) {
-							delete poll.settings.end;
-						} else {
-							poll.settings.end = parseInt(poll.settings.end, 10);
-						}
 					}
 
 					Creator.show(poll, config, function (data) {
@@ -124,7 +118,7 @@
 			return Poll.alertError('Editing not implemented');
 		}
 
-		require(['flatpickr', 'flatpickr.i10n', 'bootbox', 'dayjs', 'translator'], function (flatpickr, flatpickrI10N, bootbox, dayjs, Translator) {
+		require(['bootbox'], function (bootbox) {
 			app.parseAndTranslate('poll/creator', { poll: poll, config: config, isRedactor: !!$.Redactor }, function (html) {
 				// Initialise modal
 				var modal = bootbox.dialog({
@@ -156,12 +150,6 @@
 									return error('[[poll:error.no_options]]');
 								}
 
-								if (obj.settings.end && !dayjs(new Date(obj.settings.end)).isValid()) {
-									return error('[[poll:error.valid_date]]');
-								} else if (obj.settings.end) {
-									obj.settings.end = dayjs(new Date(obj.settings.end)).valueOf();
-								}
-
 								callback(obj);
 								return true;
 							},
@@ -190,25 +178,6 @@
 							prevOption.clone().val('').insertBefore(el).focus();
 						}
 					});
-
-				var currentLocale = Translator.getLanguage();
-				var flatpickrInstance = flatpickr('.flatpickr', {
-					enableTime: true,
-					altFormat: 'F j, Y h:i K',
-					time_24hr: false,
-					wrap: true,
-					locale: getFlatpickrLocale(currentLocale, flatpickrI10N.default),
-					onOpen: function () {
-						modal.removeAttr('tabindex');
-					},
-					onClose: function () {
-						modal.attr('tabindex', -1);
-					},
-				});
-
-				if (poll.settings && poll.settings.end) {
-					flatpickrInstance.setDate(poll.settings.end);
-				}
 			});
 		});
 	};
@@ -228,24 +197,18 @@
 
 	function serializeObjectFromForm(form) {
 		var obj = form.serializeObject();
+		const end = new Date(`${obj['settings.pollDate']} ${obj['settings.pollTime']}`).getTime();
 		var result = {
 			options: obj.options,
 			settings: {
 				title: obj['settings.title'],
 				maxvotes: obj['settings.maxvotes'],
 				disallowVoteUpdate: obj['settings.disallowVoteUpdate'] === 'on' ? 'true' : 'false',
-				end: obj['settings.end'],
+				end: end,
 			},
 		};
 
 		return result;
-	}
-
-	function getFlatpickrLocale(nodebbLocale, flatpickrLocales = {}) {
-		if (Object.keys(flatpickrLocales).includes(nodebbLocale.toLowerCase())) {
-			return flatpickrLocales[nodebbLocale];
-		}
-		return flatpickrLocales.default;
 	}
 
 	Poll.creator = Creator;

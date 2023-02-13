@@ -34,10 +34,10 @@
     </div>
 
     <div class="mb-3">
-        <label class="form-label" for="pollInputEnd">[[poll:auto_end_title]]</label>
-        <div class="input-group date flatpickr">
-            <input id="pollInputEnd" placeholder="[[poll:auto_end_placeholder]]" name="settings.end" class="form-control" value="{poll.settings.end}" data-input>
-            <a class="input-group-text" data-toggle><i class="fa fa-calendar"></i></a>
+        <label class="form-label">[[poll:auto_end_title]]</label>
+        <div class="datetime-picker">
+            <input class="form-control" type="date" id="pollDate" name="settings.pollDate" max="2100-12-31" pattern="[0-9]\{2}-[0-9]\{2}-[0-9]\{4}" required>
+	        <input class="form-control" type="time" id="pollTime" name="settings.pollTime" pattern="[0-9]{2}:[0-9]{2}" required>
         </div>
         <p class="form-text">[[poll:auto_end_help]]</p>
     </div>
