@@ -28,13 +28,14 @@
 
     <div class="mb-3">
         <div class="form-check">
-            <label class="form-check-label" for="pollDisallowVoteUpdate">[[poll:disallow_vote_update]]</label>
             <input class="form-check-input" type="checkbox" name="settings.disallowVoteUpdate" id="pollDisallowVoteUpdate" {{{if poll.settings.disallowVoteUpdate}}}checked{{{end}}}>
+            <label class="form-check-label" for="pollDisallowVoteUpdate">[[poll:disallow_vote_update]]</label>
         </div>
     </div>
 
     <div class="mb-3">
-        <label class="form-label">[[poll:auto_end_title]]</label>
+        <input type="checkbox" name="settings.hasEndTime" id="pollhasEndTime">
+        <label class="form-label" for="pollhasEndTime">[[poll:auto_end_title]]</label>
         <div class="datetime-picker">
             <input class="form-control" type="date" id="pollDate" name="settings.pollDate" max="2100-12-31" pattern="[0-9]\{2}-[0-9]\{2}-[0-9]\{4}" required>
 	        <input class="form-control" type="time" id="pollTime" name="settings.pollTime" pattern="[0-9]{2}:[0-9]{2}" required>
