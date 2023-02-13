@@ -40,7 +40,7 @@
   "voting_unavailable_title": "投票无效",
   "voting_unavailable_message": "此投票已结束或已删除。 你还可以查看投票结果。",
   "voting_update_disallowed_message": "你已经投过票，不允许再更改。",
-  "vote_is_final": "投票已结束，无法更改",
+  "vote_is_final": "此投票不允许修改选项，一旦投票则不可更改",
 
   "vote_count": "名用户投了此票",
   "votes": "票"
