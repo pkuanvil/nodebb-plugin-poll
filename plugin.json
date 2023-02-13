@@ -21,8 +21,7 @@
     { "hook": "action:topic.restore", "method": "hooks.action.topicRestore" }
   ],
   "staticDirs": {
-    "public": "public",
-    "vendor": "vendor"
+    "public": "public"
   },
   "scss": [
     "public/scss/style.scss"
