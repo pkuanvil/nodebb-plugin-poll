@@ -11,8 +11,13 @@ window.Poll = {};
 
 	require('poll/serializer')(window.utils);
 	$(window).on('action:topic.loading', function () {
-		if (ajaxify.data.posts.length > 0 && ajaxify.data.posts[0].hasOwnProperty('pollId')) {
-			getPoll(ajaxify.data.posts[0].pollId);
+		if (ajaxify.data.posts.length > 0) {
+			const post0 = ajaxify.data.posts[0];
+			if (post0.pollData) {
+				Poll.view.load(post0.pollData);
+			} else if (post0.hasOwnProperty('pollId')) {
+				getPoll(post0.pollId);
+			}
 		}
 	});
 
